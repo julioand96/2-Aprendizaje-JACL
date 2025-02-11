@@ -10,7 +10,7 @@
 __author__ = "Julio Waissman"
 __date__ = "enero 2025"
 
-
+import random
 import math
 from collections import Counter
 
@@ -37,7 +37,7 @@ def entrena_arbol(datos, target, clase_default,
     min_ejemplos: int
         El número mínimo de ejemplos para considerar un nodo como hoja
     variables_seleccionadas: list(str)
-        Lista de variables a considerar. Si es None, se consideran todas las variables, esto apica para árboles aleagtorios y lo tendrán que implementar en la tarea.
+        Lista de variables a considerar. Si es None, se consideran todas las variables, esto apica para árboles aleatorios y lo tendrán que implementar en la tarea.
         
     Regresa:
     --------
@@ -46,9 +46,14 @@ def entrena_arbol(datos, target, clase_default,
     
     """
     atributos = list(datos[0].keys())
-    atributos.remove(target)
+    atributos.remove(target) # Excluir el target de los atributos
+
+    # Seleccionar aleatoriamente variables_seleccionadas si es un número entero
+    if isinstance(variables_seleccionadas, int) and variables_seleccionadas > 0:
+        atributos = random.sample(atributos, min(variables_seleccionadas, len(atributos)))
+
         
-    # Criterios para deterinar si es un nodo hoja
+    # Criterios para determinar si es un nodo hoja
     if  len(datos) == 0 or len(atributos) == 0:
         return NodoN(terminal=True, clase_default=clase_default)
     
@@ -58,7 +63,7 @@ def entrena_arbol(datos, target, clase_default,
     if (max_profundidad == 0 or 
         len(datos) <= min_ejemplos or 
         clases.most_common(1)[0][1] / len(datos) >= acc_nodo):
-        
+
         return NodoN(terminal=True, clase_default=clase_default)
     
     variable, valor = selecciona_variable_valor(
